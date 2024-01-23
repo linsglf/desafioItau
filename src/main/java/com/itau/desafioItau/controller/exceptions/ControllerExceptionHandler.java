@@ -15,4 +15,11 @@ public class ControllerExceptionHandler {
         StandardError error = new StandardError(System.currentTimeMillis(), status.value(), "Bad Request", exception.getMessage(), request.getRequestURI());
         return ResponseEntity.status(400).body(error);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<StandardError> ObjectNotFound(Exception exception, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        StandardError error = new StandardError(System.currentTimeMillis(), status.value(), "Not Found", exception.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(404).body(error);
+    }
 }
