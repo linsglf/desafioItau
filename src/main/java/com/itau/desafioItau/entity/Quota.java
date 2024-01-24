@@ -32,7 +32,6 @@ public class Quota {
         this.numberOfParticipants= numberOfParticipants;
     }
 
-    public Quota(ArrayList<Client> clients) {
-        this.clients = clients;
+    public Quota(Quota quota) {
     }
 }

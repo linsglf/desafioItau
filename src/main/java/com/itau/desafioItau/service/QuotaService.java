@@ -26,7 +26,7 @@ public class QuotaService {
 
     public Quota createQuota(QuotaDTO quota) {
         Quota quotaToSave = new Quota(quota.total(), quota.numberOfParticipants());
-        System.out.println(quotaToSave.getNumberOfParticipants());
+        if (quotaToSave.getNumberOfParticipants() == null) quotaToSave.setNumberOfParticipants(0);
         return quotaRepository.save(quotaToSave);
     }
 
@@ -35,25 +35,15 @@ public class QuotaService {
         if (quotaToSave.getNumberOfParticipants() == null) quotaToSave.setNumberOfParticipants(0);
         if (quotaToSave.getClients().size() + clients.size() > quotaToSave.getNumberOfParticipants()) quotaToSave.setNumberOfParticipants(quotaToSave.getClients().size() + clients.size());
 
-        List<Client> clientsToSave = quotaRepository.findById(id).get().getClients();
         for(ClientDTO client : clients) {
-            clientsToSave.add(new Client(client.id()));
+            Client foundClient = clientService.findClientById(client.id());
+            quotaToSave.getClients().add(foundClient);
         }
-
-        quotaToSave.setClients(clientsToSave);
         return quotaRepository.save(quotaToSave);
     }
 
-    public ArrayList<ClientDTO> findClients(ArrayList<ClientDTO> clients) {
-        ArrayList<Client> clientsToSave = new ArrayList<>();
-        ArrayList<ClientDTO> clientsToReturn = new ArrayList<>();
-        for(ClientDTO client : clients) {
-            clientsToSave.add(clientService.findClientById(client.id()));
-        }
-        for (Client client : clientsToSave) {
-            ClientDTO clientDTO = new ClientDTO(client.getId(), client.getFirstName(), client.getLastName(), client.getParticipation());
-            clientsToReturn.add(clientDTO);
-        }
-        return clientsToReturn;
+    public void deleteQuota(Long id) {
+        quotaRepository.findById(id).orElseThrow(() -> new NullPointerException("Quota not found"));
+        quotaRepository.deleteById(id);
     }
 }

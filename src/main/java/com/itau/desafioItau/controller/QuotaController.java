@@ -31,7 +31,12 @@ public class QuotaController {
 
     @PostMapping("/addClient/{id}")
     public ResponseEntity<Quota> addClient(@RequestBody ArrayList<ClientDTO> clients, @PathVariable Long id) {
-        ArrayList<ClientDTO> clientsToAdd = quotaService.findClients(clients);
-        return ResponseEntity.ok().body(quotaService.addClient(clientsToAdd, id));
+        return ResponseEntity.ok().body(quotaService.addClient(clients, id));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Quota> deleteQuota(@PathVariable Long id) {
+        quotaService.deleteQuota(id);
+        return ResponseEntity.noContent().build();
     }
 }
