@@ -3,11 +3,9 @@ package com.itau.desafioItau.service;
 import com.itau.desafioItau.entity.Client;
 import com.itau.desafioItau.entity.dto.ClientDTO;
 import com.itau.desafioItau.repository.ClientRepository;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -21,8 +19,7 @@ public class ClientService {
 
         clientToSave.setFirstName(client.firstName());
         clientToSave.setLastName(client.lastName());
-        clientToSave.setParticipation(client.participation());
-        if (clientToSave.getParticipation() == null) clientToSave.setParticipation(BigDecimal.ZERO);
+        clientToSave.setEmail(client.email());
 
         if (!isValide(clientToSave)) throw new NullPointerException("Client is not valid");
 
@@ -34,8 +31,8 @@ public class ClientService {
                 && client.getFirstName().isEmpty() == false
                 && client.getLastName() != null
                 && client.getLastName().isEmpty() == false
-                && client.getParticipation() != null
-                && client.getParticipation().compareTo(BigDecimal.ZERO) > 0;
+                && client.getEmail() != null
+                && client.getEmail().isEmpty() == false;
     }
 
     public Client findClientById(Long id) {

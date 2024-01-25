@@ -1,7 +1,7 @@
 package com.itau.desafioItau.controller;
 
 import com.itau.desafioItau.entity.Quota;
-import com.itau.desafioItau.entity.dto.ClientDTO;
+import com.itau.desafioItau.entity.dto.ClientInQuotaDTO;
 import com.itau.desafioItau.entity.dto.QuotaDTO;
 import com.itau.desafioItau.service.QuotaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class QuotaController {
     }
 
     @PostMapping("/addClient/{id}")
-    public ResponseEntity<Quota> addClient(@RequestBody ArrayList<ClientDTO> clients, @PathVariable Long id) {
+    public ResponseEntity<Quota> addClient(@RequestBody ArrayList<ClientInQuotaDTO> clients, @PathVariable Long id) {
         return ResponseEntity.ok().body(quotaService.addClient(clients, id));
     }
 

@@ -23,15 +23,17 @@ public class Quota {
     private BigDecimal total;
     private Integer numberOfParticipants;
 
-    @ManyToMany
-    private List<Client> clients;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "quota_clients",
+            joinColumns = @JoinColumn(name = "quotas_id"),
+            inverseJoinColumns = @JoinColumn(name = "clients_id")
+    )
+    private List<ClientInQuota> clientsInQuota = new ArrayList<>();
 
 
     public Quota(BigDecimal total, Integer numberOfParticipants) {
         this.total = total;
         this.numberOfParticipants= numberOfParticipants;
-    }
-
-    public Quota(Quota quota) {
     }
 }

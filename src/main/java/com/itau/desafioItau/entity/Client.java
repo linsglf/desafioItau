@@ -1,17 +1,14 @@
 package com.itau.desafioItau.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Client {
 
     @Id
@@ -19,13 +16,11 @@ public class Client {
     private Long id;
     private String firstName;
     private String lastName;
-    private BigDecimal participation;
+    private String email;
 
-    @ManyToMany(mappedBy = "clients")
-    @JsonIgnore
-    private List<Quota> quotas;
-
-    public Client(Long id) {
+    public Client(Long id, String firstName, String lastName) {
         this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 }
