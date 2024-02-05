@@ -14,15 +14,9 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public Client saveClient(ClientDTO client) {
-        Client clientToSave = new Client();
-
-        clientToSave.setFirstName(client.firstName());
-        clientToSave.setLastName(client.lastName());
-        clientToSave.setEmail(client.email());
-
+    public Client saveClient(ClientDTO clientDTO) {
+        Client clientToSave = new Client(clientDTO);
         if (!isValide(clientToSave)) throw new NullPointerException("Client is not valid");
-
         return clientRepository.save(clientToSave);
     }
 
@@ -37,6 +31,17 @@ public class ClientService {
 
     public Client findClientById(Long id) {
         return clientRepository.findById(id).orElseThrow(() -> new NullPointerException("Client not found"));
+    }
+
+    public Client updateClient(Long id, ClientDTO clientDTO) {
+        return clientRepository.findById(id)
+                .map(c -> {
+                    if (clientDTO.firstName() != null && !clientDTO.firstName().isEmpty()) c.setFirstName(clientDTO.firstName());
+                    if (clientDTO.lastName() != null && !clientDTO.lastName().isEmpty()) c.setLastName(clientDTO.lastName());
+                    if (clientDTO.email() != null && !clientDTO.email().isEmpty()) c.setEmail(clientDTO.email());
+                    return clientRepository.save(c);
+                })
+                .orElseThrow(() -> new NullPointerException("Client not found"));
     }
 
     public void deleteClient(Long id) {

@@ -47,6 +47,16 @@ public class QuotaService {
         return quotaRepository.save(quotaToSave);
     }
 
+    public Quota updateQuota(Long id, QuotaDTO quota) {
+        return quotaRepository.findById(id)
+                .map(q -> {
+                    if (quota.total() != null) q.setTotal(quota.total());
+                    if (quota.numberOfParticipants() != null) q.setNumberOfParticipants(quota.numberOfParticipants());
+                    return quotaRepository.save(q);
+                })
+                .orElseThrow(() -> new NullPointerException("Quota not found"));
+    }
+
     public Boolean isClientInQuota(Long clientId, Long quotaId) {
         return quotaRepository.isClientInQuota(clientId, quotaId) > 0;
     }

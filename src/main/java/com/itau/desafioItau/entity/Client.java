@@ -1,5 +1,6 @@
 package com.itau.desafioItau.entity;
 
+import com.itau.desafioItau.entity.dto.ClientDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,9 +19,9 @@ public class Client {
     private String lastName;
     private String email;
 
-    public Client(Long id, String firstName, String lastName) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Client(ClientDTO clientDTO) {
+        this.firstName = clientDTO.firstName();
+        this.lastName = clientDTO.lastName();
+        this.email = clientDTO.email();
     }
 }

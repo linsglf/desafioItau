@@ -34,6 +34,12 @@ public class QuotaController {
         return ResponseEntity.ok().body(quotaService.addClient(clients, id));
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Quota> updateQuota(@PathVariable Long id, @RequestBody QuotaDTO quota) {
+        Quota quotaToUpdate = quotaService.updateQuota(id, quota);
+        return ResponseEntity.ok().body(quotaToUpdate);
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Quota> deleteQuota(@PathVariable Long id) {
         quotaService.deleteQuota(id);

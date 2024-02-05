@@ -23,6 +23,12 @@ public class ClientController {
         return ResponseEntity.ok().body(clientToSave);
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Client> updateClient(@PathVariable Long id, @RequestBody ClientDTO client) {
+        Client clientToUpdate = clientService.updateClient(id, client);
+        return ResponseEntity.ok().body(clientToUpdate);
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
         clientService.deleteClient(id);
