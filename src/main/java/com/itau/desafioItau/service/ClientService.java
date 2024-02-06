@@ -16,17 +16,7 @@ public class ClientService {
 
     public Client saveClient(ClientDTO clientDTO) {
         Client clientToSave = new Client(clientDTO);
-        if (!isValide(clientToSave)) throw new NullPointerException("Client is not valid");
         return clientRepository.save(clientToSave);
-    }
-
-    private boolean isValide(Client client) {
-        return client.getFirstName() != null
-                && client.getFirstName().isEmpty() == false
-                && client.getLastName() != null
-                && client.getLastName().isEmpty() == false
-                && client.getEmail() != null
-                && client.getEmail().isEmpty() == false;
     }
 
     public Client findClientById(Long id) {

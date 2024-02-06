@@ -4,6 +4,7 @@ package com.itau.desafioItau.controller;
 import com.itau.desafioItau.entity.Client;
 import com.itau.desafioItau.entity.dto.ClientDTO;
 import com.itau.desafioItau.service.ClientService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class ClientController {
     private ClientService clientService;
 
     @PostMapping("/save")
-    public ResponseEntity<Client> saveClient(@RequestBody ClientDTO client) {
+    public ResponseEntity<Client> saveClient(@RequestBody @Valid ClientDTO client) {
         Client clientToSave = clientService.saveClient(client);
         return ResponseEntity.ok().body(clientToSave);
     }
