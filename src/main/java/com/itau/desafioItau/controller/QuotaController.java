@@ -4,6 +4,7 @@ import com.itau.desafioItau.entity.Quota;
 import com.itau.desafioItau.entity.dto.ClientInQuotaDTO;
 import com.itau.desafioItau.entity.dto.QuotaDTO;
 import com.itau.desafioItau.service.QuotaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class QuotaController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Quota> createQuota(@RequestBody QuotaDTO quota) {
+    public ResponseEntity<Quota> createQuota(@RequestBody @Valid QuotaDTO quota) {
         Quota quotaToSave = quotaService.createQuota(quota);
         return ResponseEntity.ok().body(quotaToSave);
     }
