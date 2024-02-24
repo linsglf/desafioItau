@@ -17,19 +17,17 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotEmpty(message = "First name is required")
     private String firstName;
-
     private String lastName;
-
-    @NotEmpty(message = "Email is required")
-    @Email(message = "Invalid email format")
     private String email;
+
+    @Column(unique = true)
+    private String cpf;
 
     public Client(ClientDTO clientDTO) {
         this.firstName = clientDTO.firstName();
         this.lastName = clientDTO.lastName();
         this.email = clientDTO.email();
+        this.cpf = clientDTO.cpf();
     }
 }

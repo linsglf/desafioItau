@@ -4,6 +4,7 @@ import com.itau.desafioItau.entity.Client;
 import com.itau.desafioItau.entity.dto.ClientDTO;
 import com.itau.desafioItau.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class ClientService {
     private ClientRepository clientRepository;
 
     public Client saveClient(ClientDTO clientDTO) {
+        if (clientRepository.findByCpf(clientDTO.cpf()) != null) throw new DataIntegrityViolationException("CPF already registered");
         Client clientToSave = new Client(clientDTO);
         return clientRepository.save(clientToSave);
     }
@@ -43,5 +45,9 @@ public class ClientService {
         List<Client> clients = clientRepository.findAll();
         if (clients == null || clients.isEmpty()) throw new NullPointerException();
         return clients;
+    }
+
+    public Client findByCpf(String cpf) {
+        return clientRepository.findByCpf(cpf);
     }
 }

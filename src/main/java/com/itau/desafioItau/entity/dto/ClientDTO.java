@@ -1,9 +1,10 @@
 package com.itau.desafioItau.entity.dto;
 
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.br.CPF;
 
 public record ClientDTO(
         Long id,
@@ -11,8 +12,11 @@ public record ClientDTO(
         @Pattern(regexp = "^[^0-9]+$", message = "Name must not contain numbers")
         String firstName,
         String lastName,
-        @NotEmpty(message = "Email is required")
+        @NotBlank(message = "Email is required")
         @Email(message = "Invalid email format")
-        String email
+        String email,
+        @NotBlank(message = "CPF is required")
+        @CPF(message = "Invalid CPF")
+        String cpf
 ) {
 }

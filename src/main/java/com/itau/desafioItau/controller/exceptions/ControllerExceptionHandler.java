@@ -2,6 +2,7 @@ package com.itau.desafioItau.controller.exceptions;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -25,12 +26,19 @@ public class ControllerExceptionHandler {
     public ResponseEntity<StandardError> Validation(MethodArgumentNotValidException exception, HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
-        StringBuilder errorField = new StringBuilder("The following fields are required: ");
+        StringBuilder errorField = new StringBuilder("The following fields are required or invalid: ");
         for (FieldError f : fieldErrors) {
             errorField.append(f.getField()).append(" - ").append(f.getDefaultMessage()).append(", ");
         }
         errorField.delete(errorField.length() - 2, errorField.length());
         StandardError error = new StandardError(System.currentTimeMillis(), status.value(), "Validation Error", errorField.toString(), request.getRequestURI());
+        return ResponseEntity.status(400).body(error);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<StandardError> DataIntegrityViolation(DataIntegrityViolationException exception, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError error = new StandardError(System.currentTimeMillis(), status.value(), "Bad Request", exception.getMessage(), request.getRequestURI());
         return ResponseEntity.status(400).body(error);
     }
 
