@@ -7,6 +7,7 @@ import com.itau.desafioItau.service.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,8 +21,18 @@ public class ClientController {
 
     @PostMapping("/save")
     public ResponseEntity<Client> saveClient(@RequestBody @Valid ClientDTO client) {
-        Client clientToSave = clientService.saveClient(client);
-        return ResponseEntity.ok().body(clientToSave);
+        String encryptedPassword = new BCryptPasswordEncoder().encode(client.password());
+        return ResponseEntity.ok().body(clientService.saveClient(client, encryptedPassword));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<Client>> listAllClients() {
+        return ResponseEntity.ok().body(clientService.listAllClients());
+    }
+
+    @GetMapping("/find/{id}")
+    public ResponseEntity<Client> findClientById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(clientService.findClientById(id));
     }
 
     @PutMapping("/update/{id}")
@@ -34,10 +45,5 @@ public class ClientController {
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
         clientService.deleteClient(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/list")
-    public ResponseEntity<List<Client>> listAllClients() {
-        return ResponseEntity.ok().body(clientService.listAllClients());
     }
 }

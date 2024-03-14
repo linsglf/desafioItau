@@ -1,6 +1,6 @@
 package com.itau.desafioItau.entity.dto;
 
-import jakarta.validation.constraints.Digits;
+import com.itau.desafioItau.entity.enums.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -17,6 +17,8 @@ public record ClientDTO(
         String email,
         @NotBlank(message = "CPF is required")
         @CPF(message = "Invalid CPF")
-        String cpf
+        String cpf,
+        String password,
+        UserRole role
 ) {
 }

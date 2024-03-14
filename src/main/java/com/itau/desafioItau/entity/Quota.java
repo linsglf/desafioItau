@@ -24,12 +24,7 @@ public class Quota {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull(message = "Total is required")
-    @DecimalMin(value = "0", inclusive = true, message = "Total must be zero or greater")
     private BigDecimal total;
-
-    @Min(value = 1, message = "Number of participants must be greater than zero")
     private Integer numberOfParticipants;
 
     @ManyToMany(cascade = CascadeType.ALL)

@@ -15,9 +15,9 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public Client saveClient(ClientDTO clientDTO) {
-        if (clientRepository.findByCpf(clientDTO.cpf()) != null) throw new DataIntegrityViolationException("CPF already registered");
-        Client clientToSave = new Client(clientDTO);
+    public Client saveClient(ClientDTO clientDTO, String encryptedPassword) {
+        if (clientRepository.findClientByCpf(clientDTO.cpf()) != null) throw new DataIntegrityViolationException("CPF already registered");
+        Client clientToSave = new Client(clientDTO, encryptedPassword);
         return clientRepository.save(clientToSave);
     }
 
@@ -47,7 +47,7 @@ public class ClientService {
         return clients;
     }
 
-    public Client findByCpf(String cpf) {
-        return clientRepository.findByCpf(cpf);
+    public boolean findByCpf(String cpf) {
+        return clientRepository.findClientByCpf(cpf) != null;
     }
 }
