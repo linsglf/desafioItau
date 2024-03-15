@@ -35,7 +35,6 @@ public class Quota {
     )
     private List<ClientInQuota> clientsInQuota = new ArrayList<>();
 
-
     public Quota(BigDecimal total, Integer numberOfParticipants) {
         this.total = total;
         this.numberOfParticipants= numberOfParticipants;

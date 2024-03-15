@@ -53,7 +53,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-public ResponseEntity<StandardError> UsernameNotFound(UsernameNotFoundException exception, HttpServletRequest request) {
+    public ResponseEntity<StandardError> UsernameNotFound(UsernameNotFoundException exception, HttpServletRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         StandardError error = new StandardError(System.currentTimeMillis(), status.value(), "Not Found", exception.getMessage(), request.getRequestURI());
         return ResponseEntity.status(404).body(error);
