@@ -33,13 +33,13 @@ public class Client implements UserDetails {
     @Column(unique = true)
     private String cpf;
 
-    public Client(ClientDTO clientDTO, String encryptedPassword) {
-        this.firstName = clientDTO.firstName();
-        this.lastName = clientDTO.lastName();
-        this.email = clientDTO.email();
-        this.cpf = clientDTO.cpf();
+    public Client(Client client, String encryptedPassword) {
+        this.firstName = client.getFirstName();
+        this.lastName = client.getLastName();
+        this.email = client.getEmail();
         this.password = encryptedPassword;
-        this.role = clientDTO.role();
+        this.cpf = client.getCpf();
+        this.role = client.getRole();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.itau.desafioItau.entity.dto;
+package com.itau.desafioItau.entity.response;
 
 import lombok.Getter;
 import lombok.Setter;

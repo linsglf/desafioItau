@@ -15,9 +15,9 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public Client saveClient(ClientDTO clientDTO, String encryptedPassword) {
-        if (clientRepository.findClientByCpf(clientDTO.cpf()) != null) throw new DataIntegrityViolationException("CPF already registered");
-        Client clientToSave = new Client(clientDTO, encryptedPassword);
+    public Client saveClient(Client client, String encryptedPassword) {
+        //if (clientRepository.findClientByCpf(client.getCpf()) != null) throw new DataIntegrityViolationException("CPF already registered");
+        Client clientToSave = new Client(client, encryptedPassword);
         return clientRepository.save(clientToSave);
     }
 
@@ -25,12 +25,12 @@ public class ClientService {
         return clientRepository.findById(id).orElseThrow(() -> new NullPointerException("Client not found"));
     }
 
-    public Client updateClient(Long id, ClientDTO clientDTO) {
+    public Client updateClient(Long id, Client client) {
         return clientRepository.findById(id)
                 .map(c -> {
-                    if (clientDTO.firstName() != null && !clientDTO.firstName().isEmpty()) c.setFirstName(clientDTO.firstName());
-                    if (clientDTO.lastName() != null && !clientDTO.lastName().isEmpty()) c.setLastName(clientDTO.lastName());
-                    if (clientDTO.email() != null && !clientDTO.email().isEmpty()) c.setEmail(clientDTO.email());
+                    if (client.getFirstName() != null && !client.getFirstName().isEmpty()) c.setFirstName(client.getFirstName());
+                    if (client.getLastName() != null && !client.getLastName().isEmpty()) c.setLastName(client.getLastName());
+                    if (client.getEmail() != null && !client.getEmail().isEmpty()) c.setEmail(client.getEmail());
                     return clientRepository.save(c);
                 })
                 .orElseThrow(() -> new NullPointerException("Client not found"));

@@ -1,8 +1,10 @@
 package com.itau.desafioItau.controller;
 
 
+import com.itau.desafioItau.assembler.ClientAssembler;
 import com.itau.desafioItau.entity.Client;
 import com.itau.desafioItau.entity.dto.ClientDTO;
+import com.itau.desafioItau.entity.response.ClientResponse;
 import com.itau.desafioItau.service.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,32 +15,40 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/client")
+@RequestMapping("/clients")
 public class ClientController {
 
     @Autowired
     private ClientService clientService;
 
+    @Autowired
+    private ClientAssembler clientAssembler;
+
     @PostMapping("/save")
-    public ResponseEntity<Client> saveClient(@RequestBody @Valid ClientDTO client) {
+    public ResponseEntity<ClientResponse> saveClient(@RequestBody @Valid ClientDTO client) {
         String encryptedPassword = new BCryptPasswordEncoder().encode(client.password());
-        return ResponseEntity.ok().body(clientService.saveClient(client, encryptedPassword));
+        Client clientToSave = clientAssembler.toEntity(client);
+        Client savedClient = clientService.saveClient(clientToSave, encryptedPassword);
+        return ResponseEntity.ok().body(clientAssembler.toResponse(savedClient));
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Client>> listAllClients() {
-        return ResponseEntity.ok().body(clientService.listAllClients());
+    public ResponseEntity<List<ClientResponse>> listAllClients() {
+        List<Client> clients = clientService.listAllClients();
+        return ResponseEntity.ok().body(clientAssembler.toResponseList(clients));
     }
 
     @GetMapping("/find/{id}")
-    public ResponseEntity<Client> findClientById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(clientService.findClientById(id));
+    public ResponseEntity<ClientResponse> findClientById(@PathVariable Long id) {
+        Client client = clientService.findClientById(id);
+        return ResponseEntity.ok().body(clientAssembler.toResponse(client));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Client> updateClient(@PathVariable Long id, @RequestBody ClientDTO client) {
-        Client clientToUpdate = clientService.updateClient(id, client);
-        return ResponseEntity.ok().body(clientToUpdate);
+    public ResponseEntity<ClientResponse> updateClient(@PathVariable Long id, @RequestBody @Valid ClientDTO client) {
+        Client clientToUpdate = clientAssembler.toEntity(client);
+        Client updatedClient = clientService.updateClient(id, clientToUpdate);
+        return ResponseEntity.ok().body(clientAssembler.toResponse(updatedClient));
     }
 
     @DeleteMapping("/delete/{id}")

@@ -1,5 +1,6 @@
 package com.itau.desafioItau.controller;
 
+import com.itau.desafioItau.assembler.ClientAssembler;
 import com.itau.desafioItau.entity.Client;
 import com.itau.desafioItau.entity.dto.AuthenticationDTO;
 import com.itau.desafioItau.entity.dto.ClientDTO;
@@ -31,6 +32,9 @@ public class AuthenticationController {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private ClientAssembler clientAssembler;
+
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.cpf(), data.password());
@@ -46,6 +50,8 @@ public class AuthenticationController {
         if (clientService.findByCpf(data.cpf())) throw new EntityExistsException("CPF already registered");
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
 
-        return ResponseEntity.ok().body(clientService.saveClient(data, encryptedPassword));
+        return ResponseEntity.ok().body(clientService
+                .saveClient(clientAssembler.toEntity(data), encryptedPassword)
+        );
     }
 }
