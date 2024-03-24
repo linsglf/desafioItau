@@ -26,32 +26,32 @@ public class QuotaService {
         return quotaRepository.findAll();
     }
 
-    public Quota createQuota(QuotaDTO quota) {
-        Quota quotaToSave = new Quota(quota.total(), quota.numberOfParticipants());
-        if (quotaToSave.getNumberOfParticipants() == null) quotaToSave.setNumberOfParticipants(0);
-        return quotaRepository.save(quotaToSave);
+    public Quota createQuota(Quota quota) {
+        if (quota.getNumberOfParticipants() == null) quota.setNumberOfParticipants(0);
+        return quotaRepository.save(quota);
     }
 
-    public Quota addClient(ArrayList<ClientInQuotaDTO> clients, Long id) {
+    public Quota addClient(List<ClientInQuota> clients, Long id) {
         Quota quotaToSave  = quotaRepository.findById(id).orElseThrow(() -> new NullPointerException("Quota not found"));
         if (quotaToSave.getNumberOfParticipants() == null) quotaToSave.setNumberOfParticipants(0);
-        if (quotaToSave.getClientsInQuota().size() + clients.size() > quotaToSave.getNumberOfParticipants()) quotaToSave.setNumberOfParticipants(quotaToSave.getClientsInQuota().size() + clients.size());
+        if (quotaToSave.getClientsInQuota().size() + clients.size() > quotaToSave.getNumberOfParticipants())
+            quotaToSave.setNumberOfParticipants(quotaToSave.getClientsInQuota().size() + clients.size());
 
-        for(ClientInQuotaDTO client : clients) {
-            Client clientToSave = clientService.findClientById(client.clientId());
-            if (isClientInQuota(client.clientId(), quotaToSave.getId())) throw new EntityExistsException("Client with id: " + client.clientId() + " already in quota");
-            ClientInQuota clientInQuota = new ClientInQuota(client.clientId(), clientToSave.getFirstName(), clientToSave.getLastName(), client.participation());
+        for(ClientInQuota client : clients) {
+            Client clientToSave = clientService.findClientById(client.getClientId());
+            if (isClientInQuota(client.getClientId(), quotaToSave.getId())) throw new EntityExistsException("Client with id: " + client.getClientId() + " already in quota");
+            ClientInQuota clientInQuota = new ClientInQuota(client.getClientId(), clientToSave.getFirstName(), clientToSave.getLastName(), client.getParticipation());
             clientInQuota.getQuotas().add(quotaToSave);
             quotaToSave.getClientsInQuota().add(clientInQuota);
         }
         return quotaRepository.save(quotaToSave);
     }
 
-    public Quota updateQuota(Long id, QuotaDTO quota) {
+    public Quota updateQuota(Long id, Quota quota) {
         return quotaRepository.findById(id)
                 .map(q -> {
-                    if (quota.total() != null) q.setTotal(quota.total());
-                    if (quota.numberOfParticipants() != null) q.setNumberOfParticipants(quota.numberOfParticipants());
+                    if (quota.getTotal() != null) q.setTotal(quota.getTotal());
+                    if (quota.getNumberOfParticipants() != null) q.setNumberOfParticipants(quota.getNumberOfParticipants());
                     return quotaRepository.save(q);
                 })
                 .orElseThrow(() -> new NullPointerException("Quota not found"));
@@ -64,5 +64,9 @@ public class QuotaService {
     public void deleteQuota(Long id) {
         quotaRepository.findById(id).orElseThrow(() -> new NullPointerException("Quota not found"));
         quotaRepository.deleteById(id);
+    }
+
+    public Quota findQuotaById(Long id) {
+        return quotaRepository.findById(id).orElseThrow(() -> new NullPointerException("Quota not found"));
     }
 }

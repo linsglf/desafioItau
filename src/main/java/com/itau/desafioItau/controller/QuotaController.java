@@ -1,8 +1,12 @@
 package com.itau.desafioItau.controller;
 
+import com.itau.desafioItau.assembler.ClientInQuotaAssembler;
+import com.itau.desafioItau.assembler.QuotaAssembler;
+import com.itau.desafioItau.entity.ClientInQuota;
 import com.itau.desafioItau.entity.Quota;
 import com.itau.desafioItau.entity.dto.ClientInQuotaDTO;
 import com.itau.desafioItau.entity.dto.QuotaDTO;
+import com.itau.desafioItau.entity.response.QuotaResponse;
 import com.itau.desafioItau.service.QuotaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,37 +17,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/quota")
+@RequestMapping("/quotas")
 public class QuotaController {
 
     @Autowired
     private QuotaService quotaService;
 
+    @Autowired
+    private QuotaAssembler quotaAssembler;
+
+    @Autowired
+    private ClientInQuotaAssembler clientInQuotaAssembler;
+
     @GetMapping("/list")
-    public ResponseEntity<List<Quota>> listAllQuotas() {
-        return ResponseEntity.ok().body(quotaService.listAllQuotas());
+    public ResponseEntity<List<QuotaResponse>> listAllQuotas() {
+        List<Quota> quotas = quotaService.listAllQuotas();
+        return ResponseEntity.ok().body(quotaAssembler.toResponseList(quotas));
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Quota> createQuota(@RequestBody @Valid QuotaDTO quota) {
-        Quota quotaToSave = quotaService.createQuota(quota);
-        return ResponseEntity.ok().body(quotaToSave);
+    public ResponseEntity<QuotaResponse> createQuota(@RequestBody @Valid QuotaDTO quota) {
+        Quota quotaToSave = quotaAssembler.toEntity(quota);
+        Quota savedQuota = quotaService.createQuota(quotaToSave);
+        return ResponseEntity.ok().body(quotaAssembler.toResponse(savedQuota));
     }
 
     @PostMapping("/addClient/{id}")
-    public ResponseEntity<Quota> addClient(@RequestBody ArrayList<ClientInQuotaDTO> clients, @PathVariable Long id) {
-        return ResponseEntity.ok().body(quotaService.addClient(clients, id));
+    public ResponseEntity<QuotaResponse> addClient(@RequestBody ArrayList<ClientInQuotaDTO> clients, @PathVariable Long id) {
+        List<ClientInQuota> clientsToAdd = clientInQuotaAssembler.toEntityList(clients);
+        Quota quotaUpdated = quotaService.addClient(clientsToAdd, id);
+        return ResponseEntity.ok().body(quotaAssembler.toResponse(quotaUpdated));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Quota> updateQuota(@PathVariable Long id, @RequestBody QuotaDTO quota) {
-        Quota quotaToUpdate = quotaService.updateQuota(id, quota);
-        return ResponseEntity.ok().body(quotaToUpdate);
+    public ResponseEntity<QuotaResponse> updateQuota(@PathVariable Long id, @RequestBody QuotaDTO quota) {
+        Quota quotaToUpdate = quotaAssembler.toEntity(quota);
+        Quota updatedQuota = quotaService.updateQuota(id, quotaToUpdate);
+        return ResponseEntity.ok().body(quotaAssembler.toResponse(updatedQuota));
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Quota> deleteQuota(@PathVariable Long id) {
+    public ResponseEntity<QuotaResponse> deleteQuota(@PathVariable Long id) {
+        QuotaResponse quotaToDelete = quotaAssembler.toResponse(
+                quotaService.findQuotaById(id)
+        );
         quotaService.deleteQuota(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(quotaToDelete);
     }
 }
