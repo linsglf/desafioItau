@@ -27,8 +27,7 @@ public class ClientController {
     @PostMapping("/save")
     public ResponseEntity<ClientResponse> saveClient(@RequestBody @Valid ClientDTO client) {
         String encryptedPassword = new BCryptPasswordEncoder().encode(client.password());
-        Client clientToSave = clientAssembler.toEntity(client);
-        Client savedClient = clientService.saveClient(clientToSave, encryptedPassword);
+        Client savedClient = clientService.saveClient(client, encryptedPassword);
         return ResponseEntity.ok().body(clientAssembler.toResponse(savedClient));
     }
 

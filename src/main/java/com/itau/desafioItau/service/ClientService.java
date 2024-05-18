@@ -1,5 +1,6 @@
 package com.itau.desafioItau.service;
 
+import com.itau.desafioItau.assembler.ClientAssembler;
 import com.itau.desafioItau.entity.Client;
 import com.itau.desafioItau.entity.dto.ClientDTO;
 import com.itau.desafioItau.repository.ClientRepository;
@@ -15,9 +16,13 @@ public class ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public Client saveClient(Client client, String encryptedPassword) {
-        //if (clientRepository.findClientByCpf(client.getCpf()) != null) throw new DataIntegrityViolationException("CPF already registered");
-        Client clientToSave = new Client(client, encryptedPassword);
+    @Autowired
+    private ClientAssembler clientAssembler;
+
+    public Client saveClient(ClientDTO clientDTO, String encryptedPassword) {
+        if (clientRepository.findClientByCpf(clientDTO.cpf()) != null) throw new DataIntegrityViolationException("CPF already registered");
+        Client clientEntity = clientAssembler.toEntity(clientDTO);
+        Client clientToSave = new Client(clientEntity, encryptedPassword);
         return clientRepository.save(clientToSave);
     }
 

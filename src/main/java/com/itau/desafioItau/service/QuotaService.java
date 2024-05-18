@@ -69,4 +69,21 @@ public class QuotaService {
     public Quota findQuotaById(Long id) {
         return quotaRepository.findById(id).orElseThrow(() -> new NullPointerException("Quota not found"));
     }
+
+    public List<Quota> listQuotasByClient(Long clientId) {
+        List<Quota> quotas = new ArrayList<>();
+
+        List<Long> clientInQuotaIds = quotaRepository.getClientInQuotaIds(clientId);
+
+        List<Long> quotaIds = new ArrayList<>();
+        for (Long clientInQuotaId : clientInQuotaIds) {
+            quotaIds.addAll(quotaRepository.getQuotaIdsByClientInQuotaId(clientInQuotaId));
+        }
+
+        for (Long quotaId : quotaIds) {
+            quotaRepository.findById(quotaId).ifPresent(quotas::add);
+        }
+
+        return quotas;
+    }
 }

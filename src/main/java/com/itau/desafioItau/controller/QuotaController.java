@@ -35,6 +35,12 @@ public class QuotaController {
         return ResponseEntity.ok().body(quotaAssembler.toResponseList(quotas));
     }
 
+    @GetMapping("/quotaPerClient/{clientId}")
+    public ResponseEntity<List<QuotaResponse>> listQuotasByClient(@PathVariable Long clientId) {
+        List<Quota> quotas = quotaService.listQuotasByClient(clientId);
+        return ResponseEntity.ok().body(quotaAssembler.toResponseList(quotas));
+    }
+
     @PostMapping("/create")
     public ResponseEntity<QuotaResponse> createQuota(@RequestBody @Valid QuotaDTO quota) {
         Quota quotaToSave = quotaAssembler.toEntity(quota);

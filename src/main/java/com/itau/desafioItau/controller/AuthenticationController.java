@@ -51,7 +51,7 @@ public class AuthenticationController {
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
 
         return ResponseEntity.ok().body(clientService
-                .saveClient(clientAssembler.toEntity(data), encryptedPassword)
+                .saveClient(data, encryptedPassword)
         );
     }
 }
